@@ -57,7 +57,7 @@ Se utiliza una visualización en 3D para representar múltiples aspectos del sis
 Puede ejecutar el código usando Python 3.x. Asegúrese de tener instaladas las bibliotecas necesarias (`matplotlib`, `numpy` y `seaborn`).
 
 ```bash
-python nombre_del_script.py
+python teoria_sistemas.py
 ```
 
 Esto generará gráficos que ilustran la evolución del sistema a lo largo del tiempo.
