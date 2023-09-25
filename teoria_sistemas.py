@@ -1,13 +1,12 @@
-# Implementando mejoras en el modelo y la visualización
+# Implementando mejoras en el modelo y visualización para abordar la Teoría de Sistemas de manera más completa
 
-# Importando bibliotecas
 import random
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
+import seaborn as sns  # Para heatmaps
 
-# Definición de clases
-
+# Adaptación del código usando clases para una mejor claridad y dinámicas más realistas
 
 class Agent:
     def __init__(self, money, is_employer, cooperation_index):
@@ -17,8 +16,9 @@ class Agent:
         self.cooperation_index = cooperation_index
 
     def work(self, market):
-        earnings = (
-            market.money * 0.01)**0.5 if self.is_employer else (market.money * 0.005)**0.5
+        # Introduciendo competencia: los agentes compiten por un recurso limitado en el mercado
+        available_resource = market.money * 0.01 if self.is_employer else market.money * 0.005
+        earnings = min((available_resource)**0.5, self.money * 0.1)
         self.money += earnings * self.cooperation_index
         market.money -= earnings
 
@@ -40,7 +40,6 @@ class Agent:
         self.money += cooperation_gain
         other.money += cooperation_gain
 
-
 class Market:
     def __init__(self, initial_money):
         self.money = initial_money
@@ -53,7 +52,6 @@ class Market:
             self.add_money(500)
         elif self.money > 8000:
             self.money -= 500
-
 
 class Government:
     def tax_and_redistribute(self, agents):
@@ -70,28 +68,26 @@ class Government:
         for agent in agents:
             agent.money += (total_tax + regional_tax) / len(agents)
 
-
 # Parámetros e inicialización
 N = 100
 T = 500
 initial_market_money = 5000
 
-agents = [Agent(money=random.randint(20, 100), is_employer=random.choice(
-    [True, False]), cooperation_index=random.uniform(0.8, 1.2)) for _ in range(N)]
+agents = [Agent(money=random.randint(20, 100), is_employer=random.choice([True, False]), cooperation_index=random.uniform(0.8, 1.2)) for _ in range(N)]
 market = Market(initial_money=initial_market_money)
 government = Government()
 
-# Listas para rastrear variables
+# Listas para rastrear la riqueza y satisfacción total
 total_employer_wealth = []
 total_employee_wealth = []
 total_satisfaction = []
 
-# Simulación
+# Simulación con lógicas adaptadas
 for t in range(T):
     market.adjust_conditions()
 
     for i in range(0, len(agents), 2):
-        agents[i].cooperate(agents[i+1])
+        agents[i].cooperate(agents[i + 1])
 
     for agent in agents:
         agent.work(market)
@@ -99,26 +95,35 @@ for t in range(T):
         agent.adapt()
     government.tax_and_redistribute(agents)
 
-    total_employer_wealth.append(
-        sum(agent.money for agent in agents if agent.is_employer))
-    total_employee_wealth.append(
-        sum(agent.money for agent in agents if not agent.is_employer))
-    total_satisfaction.append(
-        sum(agent.money * agent.cooperation_index for agent in agents))
+    total_employer_wealth.append(sum(agent.money for agent in agents if agent.is_employer))
+    total_employee_wealth.append(sum(agent.money for agent in agents if not agent.is_employer))
+    total_satisfaction.append(sum(agent.money * agent.cooperation_index for agent in agents))
 
-# Creación de gráficos 3D
-fig = plt.figure(figsize=(12, 8))
-ax = fig.add_subplot(111, projection='3d')
-ax.plot(range(T), total_employer_wealth, zs=0,
-        zdir='z', label='Total Employer Wealth')
-ax.plot(range(T), total_employee_wealth, zs=1,
-        zdir='z', label='Total Employee Wealth')
-ax.plot(range(T), total_satisfaction, zs=2,
-        zdir='z', label='Total Satisfaction')
+# Mejoras en la visualización
+fig = plt.figure(figsize=(18, 6))
 
-ax.set_xlabel('Turn')
-ax.set_ylabel('Z-Direction')
-ax.set_zlabel('Total Wealth/Satisfaction')
-plt.legend()
-plt.title('Adapted System Dynamics with 3D Visualization')
+# Gráfico 3D para riqueza de empleadores y empleados
+ax1 = fig.add_subplot(131, projection='3d')
+ax1.scatter(range(T), total_employer_wealth, total_employee_wealth, c=total_satisfaction, cmap='viridis')
+ax1.set_xlabel('Time')
+ax1.set_ylabel('Total Employer Wealth')
+ax1.set_zlabel('Total Employee Wealth')
+ax1.set_title('Wealth Dynamics')
+
+# Heatmap para riqueza de empleadores y empleados
+ax2 = fig.add_subplot(132)
+sns.heatmap([total_employer_wealth, total_employee_wealth], annot=False, ax=ax2, cmap='coolwarm')
+ax2.set_title('Wealth Heatmap')
+ax2.set_xlabel('Time')
+ax2.set_ylabel('Wealth Type')
+ax2.set_yticklabels(['Employer', 'Employee'])
+
+# Gráfico 3D para satisfacción total
+ax3 = fig.add_subplot(133, projection='3d')
+ax3.scatter(range(T), total_satisfaction, total_satisfaction, c=total_satisfaction, cmap='viridis')
+ax3.set_xlabel('Time')
+ax3.set_ylabel('Total Satisfaction')
+ax3.set_zlabel('Total Satisfaction')
+ax3.set_title('Satisfaction Dynamics')
+
 plt.show()
