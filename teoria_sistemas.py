@@ -1,9 +1,12 @@
-# Manteniendo la estructura del código previo y continuando con las mejoras en visualización y análisis
+# Implementando mejoras en el modelo y la visualización
 
+# Importando bibliotecas
 import random
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
+
+# Definición de clases
 
 
 class Agent:
@@ -68,19 +71,22 @@ class Government:
             agent.money += (total_tax + regional_tax) / len(agents)
 
 
+# Parámetros e inicialización
 N = 100
 T = 500
 initial_market_money = 5000
 
-agents = [Agent(money=random.randint(20, 100), is_employer=random.choice([True, False]),
-                cooperation_index=random.uniform(0.8, 1.2)) for _ in range(N)]
+agents = [Agent(money=random.randint(20, 100), is_employer=random.choice(
+    [True, False]), cooperation_index=random.uniform(0.8, 1.2)) for _ in range(N)]
 market = Market(initial_money=initial_market_money)
 government = Government()
 
+# Listas para rastrear variables
 total_employer_wealth = []
 total_employee_wealth = []
-total_cooperation = []
+total_satisfaction = []
 
+# Simulación
 for t in range(T):
     market.adjust_conditions()
 
@@ -97,23 +103,22 @@ for t in range(T):
         sum(agent.money for agent in agents if agent.is_employer))
     total_employee_wealth.append(
         sum(agent.money for agent in agents if not agent.is_employer))
-    total_cooperation.append(
-        sum(agent.cooperation_index for agent in agents)/N)
+    total_satisfaction.append(
+        sum(agent.money * agent.cooperation_index for agent in agents))
 
-# 3D plot for enhanced visualization
+# Creación de gráficos 3D
 fig = plt.figure(figsize=(12, 8))
 ax = fig.add_subplot(111, projection='3d')
-
-x = np.linspace(1, T, T)
-ax.plot(x, total_employer_wealth, zs=0,
+ax.plot(range(T), total_employer_wealth, zs=0,
         zdir='z', label='Total Employer Wealth')
-ax.plot(x, total_employee_wealth, zs=1,
+ax.plot(range(T), total_employee_wealth, zs=1,
         zdir='z', label='Total Employee Wealth')
-ax.plot(x, total_cooperation, zs=2, zdir='z', label='Avg Cooperation Index')
+ax.plot(range(T), total_satisfaction, zs=2,
+        zdir='z', label='Total Satisfaction')
 
-ax.set_xlabel('Time')
+ax.set_xlabel('Turn')
 ax.set_ylabel('Z-Direction')
-ax.set_zlabel('Wealth/Cooperation')
-ax.legend()
+ax.set_zlabel('Total Wealth/Satisfaction')
+plt.legend()
 plt.title('Adapted System Dynamics with 3D Visualization')
 plt.show()
