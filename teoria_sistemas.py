@@ -5,8 +5,6 @@ from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sns
 
 # Class for Agents with Homeostasis, Non-linearity, Cooperation and Competition
-
-
 class Agent:
     def __init__(self, money, is_employer, cooperation_index):
         self.money = money
@@ -46,8 +44,6 @@ class Agent:
             other.money -= 10
 
 # Class for the Market with adjustment mechanism
-
-
 class Market:
     def __init__(self, initial_money):
         self.money = initial_money
@@ -62,8 +58,6 @@ class Market:
             self.money -= 500
 
 # Class for the Government with hierarchy (Regional and Federal Taxes)
-
-
 class Government:
     def tax_and_redistribute(self, agents):
         total_tax = 0
