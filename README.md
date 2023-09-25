@@ -6,37 +6,49 @@ Este repositorio contiene un modelo de simulación de un sistema económico. El 
 
 ## Conceptos de Teoría de Sistemas Incorporados
 
-### 1. Dinámicas No Lineales
+### 1. Interconexión de Componentes
 
-Los agentes en el sistema tienen ingresos y gastos que no son lineales, reflejando las realidades complejas de las economías modernas.
+- Los agentes, el mercado y el gobierno están interconectados. Los agentes interactúan entre sí y también con el mercado y el gobierno.
 
 ### 2. Homeostasis
 
-Los agentes se adaptan a su entorno cambiando su estado de "empleador" a "empleado" y viceversa, buscando un equilibrio que les permita sobrevivir y prosperar.
+- El método `adjust_conditions` en la clase `Market` busca mantener el sistema dentro de ciertos límites, lo cual es un ejemplo de homeostasis.
 
-### 3. Adaptabilidad y Aprendizaje
+### 3. Adaptabilidad
 
-Los agentes utilizan información sobre su riqueza anterior para adaptarse y cambiar su estado, ilustrando el concepto de aprendizaje y adaptabilidad en sistemas complejos.
+- Los agentes cambian su rol (`is_employer`) en función de su riqueza, mostrando adaptabilidad.
 
-### 4. Cooperación y Competencia
+### 4. Emergencia
 
-Los agentes interactúan entre sí de manera cooperativa y competitiva, lo que añade otra capa de complejidad al sistema.
+- El sistema como un todo exhibe comportamientos que no son evidentes a partir de sus componentes individuales, como la redistribución de la riqueza y la cooperación.
 
-### 5. Jerarquía
+### 5. Propósito o Función
 
-El sistema incluye un modelo simplificado de un gobierno que impone impuestos a diferentes niveles (federal y regional), añadiendo una estructura jerárquica al sistema.
+- El sistema tiene un objetivo implícito de simular una economía con agentes que trabajan, consumen, cooperan y compiten.
 
-### 6. Interconexiones y Redes
+### 6. Entropía
 
-Los agentes en el sistema no sólo interactúan con el mercado sino también entre sí y con una entidad de gobierno, formando una red interconectada de relaciones.
+- El sistema intenta reducir la entropía a través de la redistribución de impuestos y ajustes en las condiciones del mercado.
 
-### 7. Flujo de Información
+### 7. Retroalimentación
 
-El estado y las decisiones de los agentes se basan en el flujo de información a través del sistema, que en este caso es su riqueza anterior y la riqueza del sistema en general.
+- Los agentes reciben retroalimentación del mercado y del gobierno, lo cual afecta su comportamiento en futuras iteraciones.
 
-### 8. Emergencia
+### 8. No-Linearidad
 
-El sistema como un todo exhibe patrones y comportamientos que no son evidentes a nivel de los agentes individuales, un fenómeno conocido como emergencia en la Teoría de Sistemas.
+- Las funciones de utilidad y ganancia son no-lineales (raíz cuadrada y logaritmo).
+
+### 9. Jerarquía
+
+- Existe una jerarquía en la forma de un gobierno que impone impuestos y redistribuye la riqueza.
+
+### 10. Cooperación y Competencia
+
+- Los agentes en el sistema tanto cooperan como compiten entre ellos, lo cual es crucial para la teoría de sistemas.
+
+### 11. Flujos de Información y Recursos
+
+- Hay un flujo constante de recursos (dinero) e información (estado del agente y del mercado) en el sistema.
 
 ## Estructura del Código
 
@@ -56,9 +68,9 @@ Se utiliza una visualización en 3D para representar múltiples aspectos del sis
 
 Puede ejecutar el código usando Python 3.x. Asegúrese de tener instaladas las bibliotecas necesarias (`matplotlib`, `numpy` y `seaborn`).
 
-```bash
+\`\`\`bash
 python teoria_sistemas.py
-```
+\`\`\`
 
 Esto generará gráficos que ilustran la evolución del sistema a lo largo del tiempo.
 
