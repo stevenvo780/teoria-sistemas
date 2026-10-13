@@ -68,11 +68,43 @@ Se utiliza una visualización en 3D para representar múltiples aspectos del sis
 
 Puede ejecutar el código usando Python 3.x. Asegúrese de tener instaladas las bibliotecas necesarias (`matplotlib`, `numpy` y `seaborn`).
 
-\`\`\`bash
+```bash
 python teoria_sistemas.py
-\`\`\`
+```
 
 Esto generará gráficos que ilustran la evolución del sistema a lo largo del tiempo.
+
+### Reproducir una ejecución
+
+Para elegir y registrar una inicialización repetible, indique una semilla entera
+(incluido `0`):
+
+```bash
+python teoria_sistemas.py --seed 42
+```
+
+La consola mostrará `Semilla: 42`. Guarde esa semilla junto con la versión del
+código y las versiones de Python, NumPy y Matplotlib. Con el mismo código,
+parámetros y entorno, la misma semilla reproduce la inicialización y las métricas.
+No se garantiza igualdad numérica ni gráfica entre versiones distintas.
+Los parámetros siguen siendo 100 agentes, 500 turnos y 5000 de dinero inicial en
+el mercado; las fórmulas y el orden de las interacciones no cambian.
+
+Sin `--seed` se conserva la inicialización aleatoria anterior mediante el módulo
+`random`. Una semilla explícita usa un generador privado y no modifica el estado
+aleatorio global. No permite recuperar la semilla de ejecuciones anteriores sin
+registro, ni constituye una validación empírica del modelo.
+
+Importar `teoria_sistemas` permite usar las clases y `initialize_agents(seed=42)`
+sin ejecutar la simulación ni abrir gráficos. `python teoria_sistemas.py --help`
+muestra las opciones sin ejecutar la simulación.
+
+Las pruebas se ejecutan desde la raíz del repositorio con las dependencias ya
+instaladas, sin interfaz gráfica:
+
+```bash
+MPLBACKEND=Agg python -m unittest discover -s tests -v
+```
 
 ## Contribuciones
 
