@@ -1,5 +1,5 @@
+import argparse
 import random
-import matplotlib.pyplot as plt
 import numpy as np
 
 # Clase para representar un agente en el sistema.
@@ -89,53 +89,74 @@ N = 100  # Número de agentes
 T = 500  # Número de turnos en la simulación
 initial_market_money = 5000  # Dinero inicial en el mercado
 
-agents = [Agent(money=random.randint(20, 100), is_employer=random.choice(
-    [True, False]), cooperation_index=random.uniform(0.8, 1.2)) for _ in range(N)]
-market = Market(initial_money=initial_market_money)
-government = Government()
 
-# Listas para rastrear métricas durante la simulación.
-total_employer_wealth = []
-total_employee_wealth = []
-total_satisfaction = []
+def initialize_agents(seed=None):
+    """Crea los agentes; una semilla explícita usa un generador independiente."""
+    rng = random if seed is None else random.Random(seed)
+    return [Agent(money=rng.randint(20, 100), is_employer=rng.choice(
+        [True, False]), cooperation_index=rng.uniform(0.8, 1.2)) for _ in range(N)]
 
-# La simulación principal que representa la evolución del sistema.
-for t in range(T):
-    market.adjust_conditions()  # Ajustar las condiciones del mercado
 
-    # Competencia y cooperación entre agentes.
-    for i in range(0, len(agents), 2):
-        agents[i].compete(agents[i + 1])
-        agents[i].cooperate(agents[i + 1])
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="Simulación del sistema económico.")
+    parser.add_argument("--seed", type=int, default=None,
+                        help="Semilla entera opcional para repetir la inicialización.")
+    args = parser.parse_args(argv)
+    if args.seed is not None:
+        print(f"Semilla: {args.seed}")
 
-    # Trabajo, consumo y adaptación de los agentes.
-    for agent in agents:
-        agent.work(market)
-        agent.consume(market)
-        agent.adapt()
+    agents = initialize_agents(seed=args.seed)
+    market = Market(initial_money=initial_market_money)
+    government = Government()
 
-    government.tax_and_redistribute(agents)  # Impuestos y redistribución
+    # Listas para rastrear métricas durante la simulación.
+    total_employer_wealth = []
+    total_employee_wealth = []
+    total_satisfaction = []
 
-    # Rastrear métricas para análisis posterior.
-    total_employer_wealth.append(
-        sum(agent.money for agent in agents if agent.is_employer))
-    total_employee_wealth.append(
-        sum(agent.money for agent in agents if not agent.is_employer))
-    total_satisfaction.append(
-        sum(agent.money * agent.cooperation_index for agent in agents))
+    # La simulación principal que representa la evolución del sistema.
+    for t in range(T):
+        market.adjust_conditions()  # Ajustar las condiciones del mercado
 
-# Visualización en 3D para entender la dinámica del sistema.
-fig = plt.figure(figsize=(12, 8))
-ax = fig.add_subplot(111, projection='3d')
-ax.plot(range(T), total_employer_wealth, zs=0,
-        zdir='z', label='Riqueza Total de Empleadores')
-ax.plot(range(T), total_employee_wealth, zs=1,
-        zdir='z', label='Riqueza Total de Empleados')
-ax.plot(range(T), total_satisfaction, zs=2,
-        zdir='z', label='Satisfacción Total')
-ax.set_xlabel('Turno')
-ax.set_ylabel('Eje Z')
-ax.set_zlabel('Riqueza/Satisfacción Total')
-plt.title('Dinámicas del Sistema con Competencia y Cooperación')
-plt.legend()
-plt.show()
+        # Competencia y cooperación entre agentes.
+        for i in range(0, len(agents), 2):
+            agents[i].compete(agents[i + 1])
+            agents[i].cooperate(agents[i + 1])
+
+        # Trabajo, consumo y adaptación de los agentes.
+        for agent in agents:
+            agent.work(market)
+            agent.consume(market)
+            agent.adapt()
+
+        government.tax_and_redistribute(agents)  # Impuestos y redistribución
+
+        # Rastrear métricas para análisis posterior.
+        total_employer_wealth.append(
+            sum(agent.money for agent in agents if agent.is_employer))
+        total_employee_wealth.append(
+            sum(agent.money for agent in agents if not agent.is_employer))
+        total_satisfaction.append(
+            sum(agent.money * agent.cooperation_index for agent in agents))
+
+    import matplotlib.pyplot as plt
+
+    # Visualización en 3D para entender la dinámica del sistema.
+    fig = plt.figure(figsize=(12, 8))
+    ax = fig.add_subplot(111, projection='3d')
+    ax.plot(range(T), total_employer_wealth, zs=0,
+            zdir='z', label='Riqueza Total de Empleadores')
+    ax.plot(range(T), total_employee_wealth, zs=1,
+            zdir='z', label='Riqueza Total de Empleados')
+    ax.plot(range(T), total_satisfaction, zs=2,
+            zdir='z', label='Satisfacción Total')
+    ax.set_xlabel('Turno')
+    ax.set_ylabel('Eje Z')
+    ax.set_zlabel('Riqueza/Satisfacción Total')
+    plt.title('Dinámicas del Sistema con Competencia y Cooperación')
+    plt.legend()
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()
